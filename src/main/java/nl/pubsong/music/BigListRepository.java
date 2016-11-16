@@ -9,6 +9,5 @@ public interface BigListRepository
 extends CrudRepository<Nummer, Long> {
 	public ArrayList<Nummer> findByArtiestContainingIgnoreCaseOrTitelContainingIgnoreCase(@Param("naam")String naam,
 															@Param("titel") String titel);
-	//public ArrayList<Nummer> findByTitelContaining(@Param("titel") String s);
 
 }
