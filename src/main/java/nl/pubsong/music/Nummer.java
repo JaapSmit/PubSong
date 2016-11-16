@@ -11,7 +11,9 @@ public class Nummer {
 	private String titel;
 	private long id;
 	
-
+	public Nummer() {
+	}
+	
 	public Nummer(String artiest, String titel){
 		this.artiest = artiest;
 		this.titel = titel;

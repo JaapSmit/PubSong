@@ -1,10 +1,5 @@
 package nl.pubsong;
 
-import nl.pubsong.music.Afspeellijst;
-import nl.pubsong.music.BigListRepository;
-import nl.pubsong.music.BigListSqlInjector;
-import nl.pubsong.music.Nummer;
-
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,12 +7,23 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import nl.pubsong.music.Afspeellijst;
+import nl.pubsong.music.BigListRepository;
+import nl.pubsong.music.BigListSqlInjector;
+import nl.pubsong.music.Nummer;
+
+
+
 @Controller
 public class Index {
+	
+	@Autowired
+	private BigListRepository repo;
 	
 	@RequestMapping("/")
 	public String indexPagina(HttpServletRequest request) {
@@ -54,8 +60,14 @@ public class Index {
 	}
 	
 	@RequestMapping(value="/homeZoek", method=RequestMethod.POST) 
-	public String homeZoek() {
+	public String homeZoek(Model model, String zoek) {
+		ArrayList<Nummer> alleResultaten = new ArrayList<>();
 		// logica en attributen zetten, dus de lijst  vullen en laten zien.
+		//model.addAttribute("alleResultaten", repo.findByArtiestContaining(zoek));
+		alleResultaten = repo.findByArtiestContainingIgnoreCaseOrTitelContainingIgnoreCase(zoek, zoek);
+		//alleResultaten.addAll(repo.findByTitelContaining(zoek));
+		model.addAttribute("alleResultaten", alleResultaten);
+		
 		return "homepage";
 	}
 	
@@ -64,9 +76,6 @@ public class Index {
 		// logica het nummer aan de speellijst
 		return "homepage";
 	}
-	
-	@Autowired
-	private BigListRepository repo;
 	
 	@RequestMapping("/musicinput")
 	public @ResponseBody String musicinput() {
