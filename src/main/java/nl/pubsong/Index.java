@@ -31,19 +31,12 @@ public class Index {
 	@RequestMapping(value="/login", method=RequestMethod.POST) 
 	public String loginPaginaPost(HttpServletRequest request) {
 		//Tijdelijke nummerlijst, later database
-		Afspeellijst tempMainAfspeellijst = new Afspeellijst();
-		tempMainAfspeellijst.voegToe(new Nummer("Andre Hazes", "vlieger", "volkzang"));
-		tempMainAfspeellijst.voegToe(new Nummer("Chain Smokers", "Closer", "pop"));
-		tempMainAfspeellijst.voegToe(new Nummer("Sean Mendez", "Blabla", "country"));
-		tempMainAfspeellijst.voegToe(new Nummer("Kensington", "Do I Ever", "pop"));
-		tempMainAfspeellijst.voegToe(new Nummer("Rolling Stones", "Sympathy For the Devil", "rock"));
 		Afspeellijst mainAfspeellijst = new Afspeellijst();
 		// Einde
 		
 		// logica voor correcte inlogmethode, voor nu alles goed
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		session.setAttribute("tempMAfspeellijst", tempMainAfspeellijst);
 		return "redirect:/home";
 	}
 	
