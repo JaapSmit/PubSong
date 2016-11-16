@@ -1,14 +1,15 @@
-package music;
+package nl.pubsong.music;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class BigListSqlInjector {
 	public static String artiest;
+	public static ArrayList<Nummer> tmpMusicList = new ArrayList<>();
 	
-	public static void main(String[] args) {
-		
+	public static ArrayList<Nummer> musiclist() {
 		BufferedReader file = null;
 		try {
 			file = new BufferedReader(new FileReader("C:/Users/Student/workspace/PubSong/src/main/lijstMuziek.txt"));
@@ -18,20 +19,31 @@ public class BigListSqlInjector {
 		    while (line != null) {
 		    	if(!line.isEmpty()) {
 		    		formatLine(line);
+		    		System.out.println("check deze");
 		    	}
 		        //sb.append(System.lineSeparator());
 		        line = file.readLine();
 		    }
 		    //String everything = sb.toString();
 		} catch (IOException e) {
+			System.out.println("Catch");
 			e.printStackTrace();
 		} finally {
+			System.out.println("Finally");
 			try {
+				System.out.println("Try-finally");
 				file.close();
+				System.out.println("Templist: " + tmpMusicList.size());
 			} catch (IOException e) {
+				System.out.println("Try-finally-catch");
 				e.printStackTrace();
 			}
-		}	
+		}
+		for(Nummer n: tmpMusicList) {
+			System.out.println("ik kom hier wel in");
+			System.out.println(n.getArtiest());
+		}
+		return tmpMusicList;
 	}
 	
 	static void formatLine(String line) {
@@ -45,7 +57,6 @@ public class BigListSqlInjector {
 					// gevonden
 					artiest = line.substring(2, plek).trim();
 					found = true;
-					System.out.println(artiest);
 				} else {
 					index++;
 				}
@@ -72,6 +83,7 @@ public class BigListSqlInjector {
 			int eind = line.indexOf('[');
 			String titel = line.substring(plek, eind).trim();
 			Nummer nummer = new Nummer(artiest, titel);
+			tmpMusicList.add(nummer);
 		} else {
 			// negeren we je
 		}

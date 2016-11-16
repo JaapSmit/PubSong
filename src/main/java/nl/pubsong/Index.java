@@ -1,13 +1,20 @@
 package nl.pubsong;
 
-import music.*;
+import nl.pubsong.music.Afspeellijst;
+import nl.pubsong.music.BigListRepository;
+import nl.pubsong.music.BigListSqlInjector;
+import nl.pubsong.music.Nummer;
+
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class Index {
@@ -56,5 +63,19 @@ public class Index {
 	public String homeVoegToe() {
 		// logica het nummer aan de speellijst
 		return "homepage";
+	}
+	
+	@Autowired
+	private BigListRepository repo;
+	
+	@RequestMapping("/musicinput")
+	public @ResponseBody String musicinput() {
+		ArrayList<Nummer> tmpMusicList = new ArrayList<>();
+		tmpMusicList = BigListSqlInjector.musiclist();
+		for(Nummer n : tmpMusicList) {
+			n.getArtiest();
+			repo.save(n);
+		}
+		return "gelukt";
 	}
 }

@@ -1,4 +1,4 @@
-package music;
+package nl.pubsong.music;
 
 import java.util.ArrayList;
 
