@@ -1,8 +1,11 @@
 package nl.pubsong.music;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class BigListSqlInjector {
@@ -12,7 +15,12 @@ public class BigListSqlInjector {
 	public static ArrayList<Nummer> musiclist() {
 		BufferedReader file = null;
 		try {
-			file = new BufferedReader(new FileReader("C:/Users/Student/workspace/PubSong/src/main/lijstMuziek.txt"));
+			if(new File("C:/Users/Jaap/workspace/PubSong/src/main/lijstMuziek.txt").exists()) {
+				file = new BufferedReader(new FileReader("C:/Users/Jaap/workspace/PubSong/src/main/lijstMuziek.txt"));
+			} else if(new File("file:///Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt").exists()) {
+				file = new BufferedReader(new FileReader("file:///Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt"));
+			}
+			
 		    StringBuilder sb = new StringBuilder();
 		    String line = file.readLine();
 
