@@ -18,6 +18,7 @@
 				<input hidden="nummer" name="id" value="${n.id}">
 				<input type="submit" value="vote"> 
 			</form>
+			
 		</c:forEach>
 		</ul>
 	</c:if>
