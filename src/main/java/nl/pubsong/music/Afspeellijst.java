@@ -8,5 +8,13 @@ public class Afspeellijst {
 	public void voegToe(Nummer nummer){
 		lokaalAfspeellijst.add(nummer);
 	}
+	
+	public int getSize() {
+		return lokaalAfspeellijst.size();
+	}
+	
+	public ArrayList<Nummer> getAfspeellijst() {
+		return lokaalAfspeellijst;
+	}
 
 }

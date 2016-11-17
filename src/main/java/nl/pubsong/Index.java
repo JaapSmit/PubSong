@@ -71,9 +71,20 @@ public class Index {
 		return "homepage";
 	}
 	
+	@RequestMapping(value="/homeSelectie") 
+	public String homeSelectie(Model model, long id) {
+		// logica het nummer aan de speelijst
+		model.addAttribute("gekozenNummer", repo.findOne(id));
+		return "homepage";
+	}
+	
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
-	public String homeVoegToe() {
+	public String homeVoegToe(HttpServletRequest request, long id) {
 		// logica het nummer aan de speellijst
+		HttpSession session = request.getSession();
+		Afspeellijst mainAfspeellijst = (Afspeellijst)session.getAttribute("mainAfspeellijst");
+		mainAfspeellijst.voegToe(repo.findOne(id));
+		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 		return "homepage";
 	}
 	
