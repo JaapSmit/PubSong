@@ -13,7 +13,11 @@
 	<c:if test="${mainAfspeellijst.size > 0}">
 		<ul>
 		<c:forEach items="${mainAfspeellijst.afspeellijst}" var="n">
-			<li>${n.artiest} -- ${n.titel}</li> 
+			<li>${n.nummer.artiest} -- ${n.nummer.titel} -- ${n.votes} </li>
+			<form method="post" action="upvote">
+				<input hidden="nummer" name="id" value="${n.id}">
+				<input type="submit" value="vote"> 
+			</form>
 		</c:forEach>
 		</ul>
 	</c:if>

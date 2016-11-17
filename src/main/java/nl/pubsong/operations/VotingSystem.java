@@ -1,5 +1,7 @@
 package nl.pubsong.operations;
 
-public class VotingSystem {
+import nl.pubsong.music.AfspeellijstData;
 
+public abstract class VotingSystem {
+	public abstract void addVote(AfspeellijstData afspeellijstData);
 }

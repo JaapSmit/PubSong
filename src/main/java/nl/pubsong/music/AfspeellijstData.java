@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 public class AfspeellijstData {
 	private long id;
 	private Nummer nummer;
+	private int votes;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -27,6 +28,13 @@ public class AfspeellijstData {
 	public void setNummer(Nummer nummer) {
 		this.nummer = nummer;
 	}
+	public int getVotes() {
+		return votes;
+	}
+	public void setVotes(int votes) {
+		this.votes = votes;
+	}
+	
 	
 	
 }

@@ -9,6 +9,7 @@ import javax.persistence.Id;
 public class User {
 	private String userName;
 	private String passWord;
+	private VotingSystem rights;
 	private long id;
 	
 	public String getUserName() {
@@ -24,6 +25,12 @@ public class User {
 		this.passWord = passWord;
 	}
 	
+	public VotingSystem getRights() {
+		return rights;
+	}
+	public void setRights(VotingSystem rights) {
+		this.rights = rights;
+	}
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	public long getId() {

@@ -19,6 +19,7 @@ import nl.pubsong.music.AfspeellijstDataRepository;
 import nl.pubsong.music.BigListRepository;
 import nl.pubsong.music.BigListSqlInjector;
 import nl.pubsong.music.Nummer;
+import nl.pubsong.operations.BasicUser;
 import nl.pubsong.operations.User;
 import nl.pubsong.operations.UserRepository;
 
@@ -71,6 +72,8 @@ public class Index {
 				
 				session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 				*/
+				HttpSession session = request.getSession();
+				session.setAttribute("user", user.getId());
 				return "redirect:/home";
 				
 			} else {
@@ -86,10 +89,15 @@ public class Index {
 		User user = new User();
 		user.setUserName(username);
 		user.setPassWord(password);
+		user.setRights(new BasicUser());
+		HttpSession session = request.getSession();
+		session.setAttribute("user", user.getId());
 		repoUser.save(user);
+		/*
 		Afspeellijst mainAfspeellijst = new Afspeellijst();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
+		*/
 		return "redirect:/home";
 	}
 	
@@ -107,7 +115,8 @@ public class Index {
 		Iterator itr = repoAfspeellijstData.findAll().iterator();
 		while(itr.hasNext()) {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
-			mainAfspeellijst.voegToe(data.getNummer());
+			//mainAfspeellijst.voegToe(data.getNummer());
+			mainAfspeellijst.voegToe(data);
 		}
 		
 		HttpSession session = request.getSession();
@@ -149,6 +158,15 @@ public class Index {
 		
 		return "redirect:/home";
 	}
+	
+	@RequestMapping(value="/upvote", method=RequestMethod.POST)
+	public String upvote(HttpServletRequest request, long id) {
+		HttpSession session = request.getSession();
+		User user = repoUser.findOne((long)session.getAttribute("user"));
+		user.getRights().addVote(repoAfspeellijstData.findOne(id));
+		return "homepage";
+	}
+	
 	
 	@RequestMapping("/musicinput")
 	public @ResponseBody String musicinput() {

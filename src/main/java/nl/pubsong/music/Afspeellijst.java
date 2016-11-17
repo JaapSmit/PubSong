@@ -3,17 +3,17 @@ package nl.pubsong.music;
 import java.util.ArrayList;
 
 public class Afspeellijst {
-	private ArrayList<Nummer> lokaalAfspeellijst = new ArrayList<>();
+	private ArrayList<AfspeellijstData> lokaalAfspeellijst = new ArrayList<>();
 	
-	public void voegToe(Nummer nummer){
-		lokaalAfspeellijst.add(nummer);
+	public void voegToe(AfspeellijstData afspeellijstData){
+		lokaalAfspeellijst.add(afspeellijstData);
 	}
 	
 	public int getSize() {
 		return lokaalAfspeellijst.size();
 	}
 	
-	public ArrayList<Nummer> getAfspeellijst() {
+	public ArrayList<AfspeellijstData> getAfspeellijst() {
 		return lokaalAfspeellijst;
 	}
 
