@@ -90,6 +90,7 @@ public class Index {
 		user.setUserName(username);
 		user.setPassWord(password);
 		user.setRights(new BasicUser());
+		user.setRightsString("BasicUser");
 		HttpSession session = request.getSession();
 		session.setAttribute("user", user.getId());
 		repoUser.save(user);
@@ -115,10 +116,9 @@ public class Index {
 		Iterator itr = repoAfspeellijstData.findAll().iterator();
 		while(itr.hasNext()) {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
-			//mainAfspeellijst.voegToe(data.getNummer());
 			mainAfspeellijst.voegToe(data);
 		}
-		
+		mainAfspeellijst.sort();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 		return "homepage";
@@ -128,9 +128,7 @@ public class Index {
 	public String homeZoek(Model model, String zoek) {
 		ArrayList<Nummer> alleResultaten = new ArrayList<>();
 		// logica en attributen zetten, dus de lijst  vullen en laten zien.
-		//model.addAttribute("alleResultaten", repo.findByArtiestContaining(zoek));
 		alleResultaten = repo.findByArtiestContainingIgnoreCaseOrTitelContainingIgnoreCase(zoek, zoek);
-		//alleResultaten.addAll(repo.findByTitelContaining(zoek));
 		model.addAttribute("alleResultaten", alleResultaten);
 		
 		return "homepage";
@@ -164,7 +162,8 @@ public class Index {
 		HttpSession session = request.getSession();
 		User user = repoUser.findOne((long)session.getAttribute("user"));
 		user.getRights().addVote(repoAfspeellijstData.findOne(id));
-		return "homepage";
+		repoAfspeellijstData.save(repoAfspeellijstData.findOne(id));
+		return "redirect:/home";
 	}
 	
 	
