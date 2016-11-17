@@ -1,6 +1,7 @@
 package nl.pubsong;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import nl.pubsong.music.Afspeellijst;
+import nl.pubsong.music.AfspeellijstData;
+import nl.pubsong.music.AfspeellijstDataRepository;
 import nl.pubsong.music.BigListRepository;
 import nl.pubsong.music.BigListSqlInjector;
 import nl.pubsong.music.Nummer;
@@ -29,6 +32,9 @@ public class Index {
 	
 	@Autowired
 	private UserRepository repoUser;
+	
+	@Autowired
+	private AfspeellijstDataRepository repoAfspeellijstData;
 	
 	@RequestMapping("/")
 	public String indexPagina(HttpServletRequest request) {
@@ -56,12 +62,15 @@ public class Index {
 			return "redirect:/login";
 		} else {
 			if(user.getPassWord().equals(password)) {
+				/*
 				// succesvol
 				Afspeellijst mainAfspeellijst = new Afspeellijst();
 				
 				// logica voor correcte inlogmethode, voor nu alles goed
 				HttpSession session = request.getSession();
+				
 				session.setAttribute("mainAfspeellijst", mainAfspeellijst);
+				*/
 				return "redirect:/home";
 				
 			} else {
@@ -91,8 +100,18 @@ public class Index {
 	
 	
 	@RequestMapping("/home")
-	public String homePagina() {
+	public String homePagina(HttpServletRequest request) {
+		// trek de huidige afspeellijst uit de database
+		Afspeellijst mainAfspeellijst = new Afspeellijst();
+				
+		Iterator itr = repoAfspeellijstData.findAll().iterator();
+		while(itr.hasNext()) {
+			AfspeellijstData data = (AfspeellijstData)itr.next();
+			mainAfspeellijst.voegToe(data.getNummer());
+		}
 		
+		HttpSession session = request.getSession();
+		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 		return "homepage";
 	}
 	
@@ -118,11 +137,17 @@ public class Index {
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
 	public String homeVoegToe(HttpServletRequest request, long id) {
 		// logica het nummer aan de speellijst
+		/*
 		HttpSession session = request.getSession();
 		Afspeellijst mainAfspeellijst = (Afspeellijst)session.getAttribute("mainAfspeellijst");
 		mainAfspeellijst.voegToe(repo.findOne(id));
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		return "homepage";
+		*/
+		AfspeellijstData afspeellijstData = new AfspeellijstData();
+		afspeellijstData.setNummer(repo.findOne(id));
+		repoAfspeellijstData.save(afspeellijstData);
+		
+		return "redirect:/home";
 	}
 	
 	@RequestMapping("/musicinput")
