@@ -16,6 +16,8 @@ import nl.pubsong.music.Afspeellijst;
 import nl.pubsong.music.BigListRepository;
 import nl.pubsong.music.BigListSqlInjector;
 import nl.pubsong.music.Nummer;
+import nl.pubsong.operations.User;
+import nl.pubsong.operations.UserRepository;
 
 
 
@@ -24,6 +26,9 @@ public class Index {
 	
 	@Autowired
 	private BigListRepository repo;
+	
+	@Autowired
+	private UserRepository repoUser;
 	
 	@RequestMapping("/")
 	public String indexPagina(HttpServletRequest request) {
@@ -40,18 +45,50 @@ public class Index {
 	public String loginPagina() {
 		return "loginpage";
 	}
-
+	
+	// login van een bestaande user
 	@RequestMapping(value="/login", method=RequestMethod.POST) 
-	public String loginPaginaPost(HttpServletRequest request) {
-		//Tijdelijke nummerlijst, later database
-		Afspeellijst mainAfspeellijst = new Afspeellijst();
-		// Einde
+	public String loginPaginaPost(HttpServletRequest request, String username, String password) {
 		
-		// logica voor correcte inlogmethode, voor nu alles goed
+		User user = repoUser.findByuserName(username);
+		if(user == null) {
+			// geen user gevonden
+			return "redirect:/login";
+		} else {
+			if(user.getPassWord().equals(password)) {
+				// succesvol
+				Afspeellijst mainAfspeellijst = new Afspeellijst();
+				
+				// logica voor correcte inlogmethode, voor nu alles goed
+				HttpSession session = request.getSession();
+				session.setAttribute("mainAfspeellijst", mainAfspeellijst);
+				return "redirect:/home";
+				
+			} else {
+				// fout password
+				return "redirect:/login";
+			}
+		}
+	}
+	
+	// aanmaken nieuwe user
+	@RequestMapping(value="/newUser", method=RequestMethod.POST) 
+	public String loginNewUserPost(HttpServletRequest request, String username, String password) {
+		User user = new User();
+		user.setUserName(username);
+		user.setPassWord(password);
+		repoUser.save(user);
+		Afspeellijst mainAfspeellijst = new Afspeellijst();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 		return "redirect:/home";
 	}
+	
+	@RequestMapping(value="/newUser") 
+	public String loginNewUser(HttpServletRequest request) {	
+		return "newuserpage";
+	}
+	
 	
 	@RequestMapping("/home")
 	public String homePagina() {

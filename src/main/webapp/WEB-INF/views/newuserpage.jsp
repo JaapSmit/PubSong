@@ -4,10 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>PubSong</title>
+<title>Insert title here</title>
 </head>
 <body>
-	<h1>LOGIN</h1>
 	<form action="" method="post">
 		Username:
 		<input type="text" name="username"><br>
@@ -15,9 +14,5 @@
 		<input type="password" name="password"><br>
 		<input type="submit" value="login">
 	</form>
-	<form action="/newUser">
-		<input type="submit" value="New user">
-	</form>
-	
 </body>
 </html>
