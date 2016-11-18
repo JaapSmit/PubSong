@@ -75,6 +75,15 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			
+			<plugin>
+			    <groupId>com.zenjava</groupId>
+			    <artifactId>javafx-maven-plugin</artifactId>
+			    <version>8.7.0</version>
+			    <configuration>
+			        <mainClass>nl.pubsong.PubSongApplication</mainClass>
+			    </configuration>
+			</plugin>
 		</plugins>
 	</build>
 
