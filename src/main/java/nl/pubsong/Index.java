@@ -64,7 +64,7 @@ public class Index {
 		} else {
 			if(user.getPassWord().equals(password)) {
 				HttpSession session = request.getSession();
-				session.setAttribute("user", user.getId());
+				session.setAttribute("user", user);
 				return "redirect:/home";
 				
 			} else {
@@ -72,6 +72,13 @@ public class Index {
 				return "redirect:/login";
 			}
 		}
+	}
+	
+	@RequestMapping("/logout") 
+	public String logoutPagina(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.setMaxInactiveInterval(1);
+		return "redirect:/login";
 	}
 	
 	// aanmaken nieuwe user
@@ -86,7 +93,7 @@ public class Index {
 		user.setVotes(3);
 		repoUser.save(user);
 		HttpSession session = request.getSession();
-		session.setAttribute("user", user.getId());
+		session.setAttribute("user", user);
 		return "redirect:/home";
 	}
 	
@@ -106,14 +113,18 @@ public class Index {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
 			mainAfspeellijst.voegToe(data);
 		}
+		// eruit halen wat admin votes zijn, en deze vooraan zetten.
+		
 		mainAfspeellijst.sort();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
 		//System.out.println(repoUser.findOne((long)(session.getAttribute("user"))).getLastVoteDate());
 		
 		// logica voor het optellen van de votes
-		User user = repoUser.findOne((long)session.getAttribute("user"));
+		//User user = repoUser.findOne((long)session.getAttribute("user"));
+		User user = (User)session.getAttribute("user");
 		user.getRights().checkVotes(user);
+		repoUser.save(user);
 		
 		return "homepage";
 	}
@@ -148,10 +159,12 @@ public class Index {
 	@RequestMapping(value="/upvote", method=RequestMethod.POST)
 	public String upvote(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
-		User user = repoUser.findOne((long)session.getAttribute("user"));
+		//User user = repoUser.findOne((long)session.getAttribute("user"));
+		User user = (User)session.getAttribute("user");
 		user.getRights().addVote(repoAfspeellijstData.findOne(id), user);
 		user.getRights().minusUserVote(user);
 		repoAfspeellijstData.save(repoAfspeellijstData.findOne(id));
+		repoUser.save(user);
 		return "redirect:/home";
 	}
 	

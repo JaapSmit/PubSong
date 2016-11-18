@@ -14,19 +14,30 @@ public class BasicUser extends VotingSystem {
 	}
 	
 	public void minusUserVote(User user) {
-		user.setVotes(user.getVotes()-1);
+		if(user.getVotes() > 0) {
+			user.setVotes(user.getVotes()-1);
+		}
 	}
 	
+	// wordt niet meer gebruikt
 	public void addUserVote(User user) {
 		user.setVotes(user.getVotes()+1);
+		user.setDate();
 	}
 	
 	public void checkVotes(User user) {
 		if(user.getVotes() < 3) {
-			long timeDiff = (Duration.between(user.getLastVoteDate(), LocalDateTime.now())).toHours();
-			if(timeDiff >= 1){
-				addUserVote(user);
+			long timeDiff = (Duration.between(user.getLastVoteDate(), LocalDateTime.now())).toMinutes();
+			System.out.println(timeDiff);
+			System.out.println(user.getVotes());
+			if(timeDiff + user.getVotes() > 3){
+				user.setVotes(3);
+				user.setDate();
+			} else {
+				user.setVotes(user.getVotes() + (int)timeDiff);
+				user.setDate();
 			}
+		
 		}
 	}
 	

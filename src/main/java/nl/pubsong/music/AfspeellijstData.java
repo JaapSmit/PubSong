@@ -11,6 +11,7 @@ public class AfspeellijstData {
 	private long id;
 	private Nummer nummer;
 	private int votes;
+	private boolean adminVote;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -34,6 +35,14 @@ public class AfspeellijstData {
 	public void setVotes(int votes) {
 		this.votes = votes;
 	}
+	public boolean isAdminVote() {
+		return adminVote;
+	}
+	public void setAdminVote(boolean adminVote) {
+		this.adminVote = adminVote;
+	}
+	
+	
 	
 	
 	

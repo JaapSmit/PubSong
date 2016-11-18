@@ -10,6 +10,8 @@
 </head>
 <body>
 	<h1>AFSPEELLIJST</h1>
+		User: ${user.userName} <br>
+		<a href="logout" >log uit</a>
 	<c:if test="${mainAfspeellijst.size > 0}">
 		<table>
 			<tr>
@@ -22,7 +24,10 @@
 				<tr>
 					<td>${n.nummer.artiest}</td>
 					<td>${n.nummer.titel}</td>
-					<td>${n.votes}</td>
+					<td>
+					<c:if test="${n.adminVote == true}"> Admin veto! </c:if>
+					<c:if test="${n.adminVote == false}">${n.votes}</c:if>
+					</td>
 					<td>
 					<form method="post" action="upvote">
 						<input hidden="nummer" name="id" value="${n.id}">
