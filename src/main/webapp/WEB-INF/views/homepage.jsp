@@ -11,16 +11,27 @@
 <body>
 	<h1>AFSPEELLIJST</h1>
 	<c:if test="${mainAfspeellijst.size > 0}">
-		<ul>
-		<c:forEach items="${mainAfspeellijst.afspeellijst}" var="n">
-			<li>${n.nummer.artiest} -- ${n.nummer.titel} -- ${n.votes} </li>
-			<form method="post" action="upvote">
-				<input hidden="nummer" name="id" value="${n.id}">
-				<input type="submit" value="vote"> 
-			</form>
+		<table>
+			<tr>
+				<th>Artiest</th>
+				<th>Titel</th>
+				<th>Votes</th>
+			</tr>
 			
-		</c:forEach>
-		</ul>
+			<c:forEach items="${mainAfspeellijst.afspeellijst}" var="n">
+				<tr>
+					<td>${n.nummer.artiest}</td>
+					<td>${n.nummer.titel}</td>
+					<td>${n.votes}</td>
+					<td>
+					<form method="post" action="upvote">
+						<input hidden="nummer" name="id" value="${n.id}">
+						<input type="submit" value="vote"> 
+					</form>
+					</td>
+				</tr>
+			</c:forEach>
+		</table>
 	</c:if>
 	
 	Artiest: ${gekozenNummer.artiest} <br>

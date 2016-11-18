@@ -2,6 +2,9 @@ package nl.pubsong.operations;
 
 
 
+import java.sql.Date; // mocht dit niet werken, dan naar util date
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +16,9 @@ public class User {
 	private String userName;
 	private String passWord;
 	private long id;
-	
 	private String rightsString;
+	private int votes;
+	private LocalDateTime lastVoteDate;
 	
 	public User() {
 	}
@@ -32,6 +36,30 @@ public class User {
 		this.passWord = passWord;
 	}
 	
+	public int getVotes() {
+		return votes;
+	}
+
+	public void setVotes(int votes) {
+		this.votes = votes;
+	}
+	
+	public LocalDateTime getLastVoteDate() {
+		return lastVoteDate;
+	}
+
+	public void setLastVoteDate(LocalDateTime lastVoteDate) {
+		this.lastVoteDate = lastVoteDate;
+	}
+
+
+	
+	@Transient
+	public void setDate() {
+		LocalDateTime tmpdate = LocalDateTime.now();
+		setLastVoteDate(tmpdate);
+	}
+
 	@Transient
 	private VotingSystem rights;
 	

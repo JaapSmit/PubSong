@@ -63,15 +63,6 @@ public class Index {
 			return "redirect:/login";
 		} else {
 			if(user.getPassWord().equals(password)) {
-				/*
-				// succesvol
-				Afspeellijst mainAfspeellijst = new Afspeellijst();
-				
-				// logica voor correcte inlogmethode, voor nu alles goed
-				HttpSession session = request.getSession();
-				
-				session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-				*/
 				HttpSession session = request.getSession();
 				session.setAttribute("user", user.getId());
 				return "redirect:/home";
@@ -89,16 +80,13 @@ public class Index {
 		User user = new User();
 		user.setUserName(username);
 		user.setPassWord(password);
-		user.setRights(new BasicUser());
+		//user.setRights(new BasicUser());
 		user.setRightsString("BasicUser");
+		user.setDate();
+		user.setVotes(3);
+		repoUser.save(user);
 		HttpSession session = request.getSession();
 		session.setAttribute("user", user.getId());
-		repoUser.save(user);
-		/*
-		Afspeellijst mainAfspeellijst = new Afspeellijst();
-		HttpSession session = request.getSession();
-		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		*/
 		return "redirect:/home";
 	}
 	
@@ -121,6 +109,12 @@ public class Index {
 		mainAfspeellijst.sort();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
+		//System.out.println(repoUser.findOne((long)(session.getAttribute("user"))).getLastVoteDate());
+		
+		// logica voor het optellen van de votes
+		User user = repoUser.findOne((long)session.getAttribute("user"));
+		user.getRights().checkVotes(user);
+		
 		return "homepage";
 	}
 	
@@ -144,12 +138,6 @@ public class Index {
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
 	public String homeVoegToe(HttpServletRequest request, long id) {
 		// logica het nummer aan de speellijst
-		/*
-		HttpSession session = request.getSession();
-		Afspeellijst mainAfspeellijst = (Afspeellijst)session.getAttribute("mainAfspeellijst");
-		mainAfspeellijst.voegToe(repo.findOne(id));
-		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		*/
 		AfspeellijstData afspeellijstData = new AfspeellijstData();
 		afspeellijstData.setNummer(repo.findOne(id));
 		repoAfspeellijstData.save(afspeellijstData);
@@ -161,7 +149,8 @@ public class Index {
 	public String upvote(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
 		User user = repoUser.findOne((long)session.getAttribute("user"));
-		user.getRights().addVote(repoAfspeellijstData.findOne(id));
+		user.getRights().addVote(repoAfspeellijstData.findOne(id), user);
+		user.getRights().minusUserVote(user);
 		repoAfspeellijstData.save(repoAfspeellijstData.findOne(id));
 		return "redirect:/home";
 	}
