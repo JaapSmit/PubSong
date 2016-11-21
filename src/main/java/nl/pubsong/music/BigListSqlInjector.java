@@ -17,8 +17,8 @@ public class BigListSqlInjector {
 		try {
 			if(new File("C:/Users/Jaap/workspace/PubSong/src/main/lijstMuziek.txt").exists()) {
 				file = new BufferedReader(new FileReader("C:/Users/Jaap/workspace/PubSong/src/main/lijstMuziek.txt"));
-			} else if(new File("file:///Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt").exists()) {
-				file = new BufferedReader(new FileReader("file:///Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt"));
+			} else if(new File("/Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt").exists()) {
+				file = new BufferedReader(new FileReader("/Users/pieterhuijgens/Documents/workspace/PubSong/src/main/lijstMuziek.txt"));
 			}
 			
 		    StringBuilder sb = new StringBuilder();
