@@ -19,12 +19,6 @@ public class BasicUser extends VotingSystem {
 		}
 	}
 	
-	// wordt niet meer gebruikt
-	public void addUserVote(User user) {
-		user.setVotes(user.getVotes()+1);
-		user.setDate();
-	}
-	
 	public void checkVotes(User user) {
 		if(user.getVotes() < 3) {
 			long timeDiff = (Duration.between(user.getLastVoteDate(), LocalDateTime.now())).toMinutes();

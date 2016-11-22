@@ -124,6 +124,7 @@ public class Index {
 		//User user = repoUser.findOne((long)session.getAttribute("user"));
 		User user = (User)session.getAttribute("user");
 		user.getRights().checkVotes(user);
+		System.out.println("userrights: " + user.getRights());
 		repoUser.save(user);
 		
 		return "homepage";

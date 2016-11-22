@@ -57,6 +57,7 @@ public class User {
 	@Transient
 	public void setDate() {
 		LocalDateTime tmpdate = LocalDateTime.now();
+		System.out.println("ik zet de datum naar: " + tmpdate);
 		setLastVoteDate(tmpdate);
 	}
 
@@ -68,6 +69,8 @@ public class User {
 		if(rights == null) {
 			if(rightsString.equals("BasicUser")) {
 				this.rights = new BasicUser();
+			} else if(rightsString.equals("PremiumUser")) {
+				this.rights = new PremiumUser();
 			} else if(rightsString.equals("AdminUser")) {
 				this.rights = new AdminUser();
 			}
