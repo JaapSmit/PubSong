@@ -146,16 +146,35 @@ public class Index {
 		return "homepage";
 	}
 	
+	// logica het nummer aan de speellijst
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
 	public String homeVoegToe(HttpServletRequest request, long id) {
-		// logica het nummer aan de speellijst
-		AfspeellijstData afspeellijstData = new AfspeellijstData();
-		afspeellijstData.setNummer(repo.findOne(id));
-		repoAfspeellijstData.save(afspeellijstData);
-		
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("user");
+		// heb je genoeg votes om een nummer toe te voegen?
+		if(user.getVotes() > 0) {
+			// is het nummer al toegevoegd?
+			Afspeellijst tmpLijst = (Afspeellijst)session.getAttribute("mainAfspeellijst");
+			for(AfspeellijstData data : tmpLijst.getAfspeellijst()) {
+				if(data.getNummer().getId() == id) {
+					user.getRights().addVote(data, user);
+					user.getRights().minusUserVote(user);
+					repoAfspeellijstData.save(data);
+					repoUser.save(user);
+					return "redirect:/home";
+				}
+			}
+			AfspeellijstData afspeellijstData = new AfspeellijstData();
+			afspeellijstData.setNummer(repo.findOne(id));
+			user.getRights().addVote(afspeellijstData, user);
+			user.getRights().minusUserVote(user);
+			repoAfspeellijstData.save(afspeellijstData);
+			repoUser.save(user);
+		} 
 		return "redirect:/home";
 	}
 	
+	// Als je op de upvote knop klikt
 	@RequestMapping(value="/upvote", method=RequestMethod.POST)
 	public String upvote(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
@@ -168,7 +187,7 @@ public class Index {
 		return "redirect:/home";
 	}
 	
-	
+	// Hier niet aanzitten, behalve als je een lege database hebt
 	@RequestMapping("/musicinput")
 	public @ResponseBody String musicinput() {
 		ArrayList<Nummer> tmpMusicList = new ArrayList<>();
