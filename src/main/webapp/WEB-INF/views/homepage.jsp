@@ -7,16 +7,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" href="/css/CSS_template.css">
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="voegtoe.js"></script>
 </head>
 <body>
 	<table style="width: 100%">
 		<tr>
-	<th><h1>AFSPEELLIJST</h1></th>
-	<th><h12>User: ${user.userName}</h12></th>
-	<th><a href="logout">log uit</a></th>
+			<th><h1>AFSPEELLIJST</h1></th>
+			<th><h12>User: ${user.userName}</h12></th>
+			<th><a href="logout">log uit</a></th>
 		</tr>
 	</table>
-		<img src="/css/PubSong2.png" alt="PubSong logo" align="right" align="top">
+	<img src="/css/PubSong2.png" alt="PubSong logo" align="right"
+		align="top">
 	<c:if test="${mainAfspeellijst.size > 0}">
 		<table style="width: 50%">
 			<tr>
@@ -33,8 +36,8 @@
 							test="${n.adminVote == false}">${n.votes}</c:if></td>
 					<td>
 						<form method="post" action="upvote">
-							<input hidden="nummer" name="id" value="${n.id}">
-							<input type=submit class="vote-button" value="vote">
+							<input hidden="nummer" name="id" value="${n.id}"> <input
+								type=submit class="vote-button" value="vote">
 
 
 						</form>
@@ -42,32 +45,38 @@
 				</tr>
 			</c:forEach>
 		</table>
+		<br>
 	</c:if>
-	
-	<h8>Artiest: ${gekozenNummer.artiest}</h8>
-	<br> <h8>Titel: ${gekozenNummer.titel}</h8>
-	<br>
+	<table style="width: 60%">
+		<tr>
+			<th><h8>Zoek in de database:</h8> <br> <br>
+				<form method="post" action="homeZoek">
+					<input type="text" name="zoek"> <input type="submit"
+						class="zoek-button" value="zoek">
+				</form></th>
+			<th><h2 style="display:none"><h8>Artiest: </h8>${gekozenNummer.artiest} <br> <h8>Titel: </h8>
+				${gekozenNummer.titel}<br>
 
-	<form method="post" action="homeVoegToe">
+				<form method="post" action="homeVoegToe">
 
-		<input hidden="nummer" name="id" value="${gekozenNummer.id}">
-		<input type="submit" class="voegtoe-button" value="Voeg toe">
-	</form>
+					<input hidden="nummer" name="id" value="${gekozenNummer.id}">
+					<input type="submit" class="voegtoe-button" value="Voeg toe">
+				</form></h2></th>
+		<tr>
+			<td >
+				<ul>
+					<c:forEach items="${alleResultaten}" var="n">
+						<li class="voegtoe"><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
+								${n.titel} </a> -->
+								${n.artiest } -- ${n.titel}
+								</li>
+					</c:forEach>
+				</ul>
+			</td>
+		</tr>
 
 
-	<form method="post" action="homeZoek">
-		<input type="text" name="zoek"> 
-		<input type="submit" class="zoek-button" value="zoek">
-	</form>
-
-
-	<ul>
-		<c:forEach items="${alleResultaten}" var="n">
-			<li><a href="homeSelectie?id=${n.id}"> ${n.artiest} --
-					${n.titel} </a></li>
-		</c:forEach>
-	</ul>
-
+	</table>
 
 </body>
 </html>
