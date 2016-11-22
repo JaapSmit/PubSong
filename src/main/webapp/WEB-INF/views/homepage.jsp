@@ -54,7 +54,7 @@
 					<input type="text" name="zoek"> <input type="submit"
 						class="zoek-button" value="zoek">
 				</form></th>
-			<th><h2 style="display:none"><h8>Artiest: </h8>${n.artiest} <br> <h8>Titel: </h8>
+			<th><h2 style="display:none"><h8>Artiest: </h8> <span id="artiest"></span> <br> <h8>Titel: </h8>
 				${gekozenNummer.titel}<br>
 
 				<form method="post" action="homeVoegToe">
@@ -66,9 +66,9 @@
 			<td >
 				<ul>
 					<c:forEach items="${alleResultaten}" var="n">
-						<li class="voegtoe"><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
+						<li class="toevoegen"><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
 								${n.titel} </a> -->
-								${n.artiest } -- ${n.titel}
+								<span class="artiest">${n.artiest }</span> -- <span class="titel">${n.titel}</span>
 								</li>
 					</c:forEach>
 				</ul>
@@ -77,6 +77,20 @@
 
 
 	</table>
+	
+	<script>
+	$(document).ready(function() {
+		function selectieToevoegen() {
+			
+			console.log(".toevoegen geklikt op", $(this).find('.artiest').text());
+			var artiest = $(this).find('.artiest').text();
+			var titel = $(this).find('.titel').text();
+			$('#artiest').text(artiest);
+			$('h2').show();
+		}
+		$(".toevoegen").click(selectieToevoegen);
+	});
+	</script>
 
 </body>
 </html>
