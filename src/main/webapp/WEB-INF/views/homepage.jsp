@@ -54,7 +54,7 @@
 					<input type="text" name="zoek"> <input type="submit"
 						class="zoek-button" value="zoek">
 				</form></th>
-			<th><h2 style="display:none"><h8>Artiest: </h8>${gekozenNummer.artiest} <br> <h8>Titel: </h8>
+			<th><h2 style="display:none"><h8>Artiest: </h8>${n.artiest} <br> <h8>Titel: </h8>
 				${gekozenNummer.titel}<br>
 
 				<form method="post" action="homeVoegToe">
