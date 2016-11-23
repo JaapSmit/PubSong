@@ -64,10 +64,9 @@
 			var idVar = $(this).attr('id');
 			//console.log(id)
 			$(".voegtoe-button").click(function() {
-				$.post("homeVoegToe", {id: idVar});
-				console.log("hier ben ik misschien ook");
-				Refresh();
-				console.log('hier ben ik ');
+				$.post("homeVoegToe", {id: idVar}, function() {
+					Refresh();
+				});
 				// refresh van de main afspeellijst
 			})
 		}
