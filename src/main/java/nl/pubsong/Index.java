@@ -153,17 +153,19 @@ public class Index {
 		user.getRights().checkVotes(user);
 		System.out.println("userrights: " + user.getRights());
 		repoUser.save(user);
+		System.out.println(mainAfspeellijst);
 		return mainAfspeellijst.getAfspeellijst();
 	}
 	
 	@RequestMapping(value="/homeZoek", method=RequestMethod.POST) 
-	public String homeZoek(Model model, String zoek) {
+	public String homeZoek(HttpServletRequest request, String zoek) {
 		ArrayList<Nummer> alleResultaten = new ArrayList<>();
 		// logica en attributen zetten, dus de lijst  vullen en laten zien.
 		alleResultaten = repo.findByArtiestContainingIgnoreCaseOrTitelContainingIgnoreCase(zoek, zoek);
-		model.addAttribute("alleResultaten", alleResultaten);
+		HttpSession session = request.getSession();
+		session.setAttribute("alleResultaten", alleResultaten);
 		
-		return "homepage";
+		return "redirect:/home";
 	}
 	
 	@RequestMapping(value="/homeSelectie") 

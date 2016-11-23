@@ -22,28 +22,7 @@
 		align="top">
 	<c:if test="${mainAfspeellijst.size > 0}">
 		<table style="width: 50%" id="hoofdAfspeellijst">
-			<tr>
-				<th>Artiest</th>
-				<th>Titel</th>
-				<th>Votes</th>
-			</tr>
-
-			<c:forEach items="${mainAfspeellijst.afspeellijst}" var="n">
-				<tr>
-					<td>${n.nummer.artiest}</td>
-					<td>${n.nummer.titel}</td>
-					<td><c:if test="${n.adminVote == true}"> Admin veto! </c:if> <c:if
-							test="${n.adminVote == false}">${n.votes}</c:if></td>
-					<td>
-						<form method="post" action="upvote">
-							<input hidden="nummer" name="id" value="${n.id}"> <input
-								type=submit class="vote-button" value="vote">
-
-
-						</form>
-					</td>
-				</tr>
-			</c:forEach>
+			
 		</table>
 		<br>
 	</c:if>
@@ -85,37 +64,49 @@
 			var idVar = $(this).attr('id');
 			//console.log(id)
 			$(".voegtoe-button").click(function() {
-				console.log(idVar);
 				$.post("homeVoegToe", {id: idVar});
+				console.log("hier ben ik misschien ook");
 				Refresh();
+				console.log('hier ben ik ');
 				// refresh van de main afspeellijst
 			})
 		}
 		$(".toevoegen").click(selectieToevoegen);
 		
 		function Refresh() {
+			console.log("refresh");
+			$('#hoofdAfspeellijst tr').remove();
+			var headerElement = $('<tr>' +
+					'<th>Artiest</th>' +
+					'<th>Titel</th>' +
+					'<th>Votes</th>' +
+					'</tr>'
+					);
+			$('#hoofdAfspeellijst').append(headerElement);
+			
 			$.get("refresh", function(data) {
 				for(var i = 0; i < data.length; i++) {
-					console.log(data[i]);
 					var votes;
 					if (data[i].adminVote == true) {
 						votes = "Admin veto!";
 					} else {
 						votes = data[i].votes;
 					} 
+					
 					var newElement = $('<tr>' + 
 							'<td>' + data[i].nummer.artiest + '</td>' + 
 							'<td>' + data[i].nummer.titel + '</td>' + 
 							'<td>' + votes + '</td>' +
 							'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
-							data[i].nummer.id +  
+							data[i].id +  
 							'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
 							
 							'</tr>');
-					$('#hoofdAfspeellijst').append
+					$('#hoofdAfspeellijst').append(newElement);
 				}
 			});
 		}
+		Refresh();
 		
 	});
 	</script>
