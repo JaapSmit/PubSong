@@ -14,14 +14,14 @@
 	<table style="width: 100%">
 		<tr>
 			<th><h1>AFSPEELLIJST</h1></th>
-			<th><h12>User: ${user.userName}</h12></th>
+			<th><h12>User: ${user.userName} -- Votes: <span id="uservotes"></span></h12></th>
 			<th><a href="logout">log uit</a></th>
 		</tr>
 	</table>
 	<img src="/css/PubSong2.png" alt="PubSong logo" align="right"
 		align="top">
 	<c:if test="${mainAfspeellijst.size > 0}">
-		<table style="width: 50%" id="hoofdAfspeellijst">
+		<table style="width: 50%; height: 500px;" id="hoofdAfspeellijst">
 			
 		</table>
 		<br>
@@ -73,17 +73,21 @@
 		$(".toevoegen").click(selectieToevoegen);
 		
 		function Refresh() {
-			console.log("refresh");
-			$('#hoofdAfspeellijst tr').remove();
-			var headerElement = $('<tr>' +
-					'<th>Artiest</th>' +
-					'<th>Titel</th>' +
-					'<th>Votes</th>' +
-					'</tr>'
-					);
-			$('#hoofdAfspeellijst').append(headerElement);
+			
+			//$('#hoofdAfspeellijst tr').remove();
+
 			
 			$.get("refresh", function(data) {
+				console.log("refresh");
+				$('#uservotes').text(${user.votes});
+				$('#hoofdAfspeellijst').empty();
+				var headerElement = $('<tr>' +
+						'<th>Artiest</th>' +
+						'<th>Titel</th>' +
+						'<th>Votes</th>' +
+						'</tr>'
+						);
+				$('#hoofdAfspeellijst').append(headerElement);
 				for(var i = 0; i < data.length; i++) {
 					var votes;
 					if (data[i].adminVote == true) {
@@ -106,6 +110,7 @@
 			});
 		}
 		Refresh();
+		myVar = setInterval(Refresh, 5000);
 		
 	});
 	</script>
