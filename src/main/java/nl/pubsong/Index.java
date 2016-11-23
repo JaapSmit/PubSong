@@ -2,6 +2,7 @@ package nl.pubsong;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -130,6 +131,31 @@ public class Index {
 		return "homepage";
 	}
 	
+	@RequestMapping("/refresh")
+	public @ResponseBody List<AfspeellijstData> refresh(HttpServletRequest request) {
+		// trek de huidige afspeellijst uit de database
+		Afspeellijst mainAfspeellijst = new Afspeellijst();
+						
+		Iterator itr = repoAfspeellijstData.findAll().iterator();
+		while(itr.hasNext()) {
+			AfspeellijstData data = (AfspeellijstData)itr.next();
+			mainAfspeellijst.voegToe(data);
+		}
+		// eruit halen wat admin votes zijn, en deze vooraan zetten.
+				
+		mainAfspeellijst.sort();
+		HttpSession session = request.getSession();
+		//System.out.println(repoUser.findOne((long)(session.getAttribute("user"))).getLastVoteDate());
+				
+		// logica voor het optellen van de votes
+		//User user = repoUser.findOne((long)session.getAttribute("user"));
+		User user = (User)session.getAttribute("user");
+		user.getRights().checkVotes(user);
+		System.out.println("userrights: " + user.getRights());
+		repoUser.save(user);
+		return mainAfspeellijst.getAfspeellijst();
+	}
+	
 	@RequestMapping(value="/homeZoek", method=RequestMethod.POST) 
 	public String homeZoek(Model model, String zoek) {
 		ArrayList<Nummer> alleResultaten = new ArrayList<>();
@@ -149,7 +175,7 @@ public class Index {
 	
 	// logica het nummer aan de speellijst
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
-	public String homeVoegToe(HttpServletRequest request, long id) {
+	public @ResponseBody void homeVoegToe(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("user");
 		// heb je genoeg votes om een nummer toe te voegen?
@@ -162,7 +188,6 @@ public class Index {
 					user.getRights().minusUserVote(user);
 					repoAfspeellijstData.save(data);
 					repoUser.save(user);
-					return "redirect:/home";
 				}
 			}
 			AfspeellijstData afspeellijstData = new AfspeellijstData();
@@ -172,7 +197,6 @@ public class Index {
 			repoAfspeellijstData.save(afspeellijstData);
 			repoUser.save(user);
 		} 
-		return "redirect:/home";
 	}
 	
 	// Als je op de upvote knop klikt

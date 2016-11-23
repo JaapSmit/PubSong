@@ -21,7 +21,7 @@
 	<img src="/css/PubSong2.png" alt="PubSong logo" align="right"
 		align="top">
 	<c:if test="${mainAfspeellijst.size > 0}">
-		<table style="width: 50%">
+		<table style="width: 50%" id="hoofdAfspeellijst">
 			<tr>
 				<th>Artiest</th>
 				<th>Titel</th>
@@ -54,19 +54,15 @@
 					<input type="text" name="zoek"> <input type="submit"
 						class="zoek-button" value="zoek">
 				</form></th>
-			<th><h2 style="display:none"><h8>Artiest: </h8> <span id="artiest"></span> <br> <h8>Titel: </h8>
-				${gekozenNummer.titel}<br>
+			<th><h2 style="display:none"><h8>Artiest: </h8> <span id="artiest"></span> <br> <h8>Titel: </h8> <span id="titel"></span>
 
-				<form method="post" action="homeVoegToe">
-
-					<input hidden="nummer" name="id" value="${gekozenNummer.id}">
 					<input type="submit" class="voegtoe-button" value="Voeg toe">
-				</form></h2></th>
+				</h2></th>
 		<tr>
 			<td >
 				<ul>
 					<c:forEach items="${alleResultaten}" var="n">
-						<li class="toevoegen"><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
+						<li class="toevoegen" id=${n.id}><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
 								${n.titel} </a> -->
 								<span class="artiest">${n.artiest }</span> -- <span class="titel">${n.titel}</span>
 								</li>
@@ -81,14 +77,46 @@
 	<script>
 	$(document).ready(function() {
 		function selectieToevoegen() {
-			
-			console.log(".toevoegen geklikt op", $(this).find('.artiest').text());
 			var artiest = $(this).find('.artiest').text();
 			var titel = $(this).find('.titel').text();
 			$('#artiest').text(artiest);
+			$('#titel').text(titel);
 			$('h2').show();
+			var idVar = $(this).attr('id');
+			//console.log(id)
+			$(".voegtoe-button").click(function() {
+				console.log(idVar);
+				$.post("homeVoegToe", {id: idVar});
+				Refresh();
+				// refresh van de main afspeellijst
+			})
 		}
 		$(".toevoegen").click(selectieToevoegen);
+		
+		function Refresh() {
+			$.get("refresh", function(data) {
+				for(var i = 0; i < data.length; i++) {
+					console.log(data[i]);
+					var votes;
+					if (data[i].adminVote == true) {
+						votes = "Admin veto!";
+					} else {
+						votes = data[i].votes;
+					} 
+					var newElement = $('<tr>' + 
+							'<td>' + data[i].nummer.artiest + '</td>' + 
+							'<td>' + data[i].nummer.titel + '</td>' + 
+							'<td>' + votes + '</td>' +
+							'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
+							data[i].nummer.id +  
+							'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
+							
+							'</tr>');
+					$('#hoofdAfspeellijst').append
+				}
+			});
+		}
+		
 	});
 	</script>
 
