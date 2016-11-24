@@ -38,6 +38,39 @@ public class Index {
 	@Autowired
 	private AfspeellijstDataRepository repoAfspeellijstData;
 	
+	@RequestMapping("/admin")
+	public String adminPage(HttpServletRequest request) {
+		// beetje beveiliging erin
+		HttpSession session = request.getSession(false);
+		User user = (User)session.getAttribute("user");
+		if(session == null || user == null) {
+			// je bent nu dus niet ingelogd return naar loginpage
+			return "redirect:/login";
+		} else {
+			if(user.getRightsString().equals("AdminUser")) {
+				// je ben nu niet bevoegd voor deze pagina
+				System.out.println("In de adminpage");
+				return "adminpage";
+			} else {
+				return "redirect:/login";
+			}
+		}
+	}
+	
+	
+	@RequestMapping(value="/findUser", method=RequestMethod.POST)
+	public @ResponseBody User findUser(String userNaam){
+		return repoUser.findByuserName(userNaam);
+	}
+	
+	@RequestMapping(value="/saveUser", method=RequestMethod.POST)
+	public @ResponseBody void saveUser(String userNaam, int userVotes, String userRights){
+		User user =  repoUser.findByuserName(userNaam);
+		user.setVotes(userVotes);
+		user.setRightsString(userRights);
+		repoUser.save(user);		
+	}
+	
 	// Get the number one song
 	@RequestMapping("/getNumberOneSong")
 	public @ResponseBody AfspeellijstData getNumberOneSong(HttpServletRequest request){
