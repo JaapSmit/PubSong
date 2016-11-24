@@ -66,6 +66,7 @@
 			$(".voegtoe-button").click(function() {
 				$.post("homeVoegToe", {id: idVar}, function() {
 					Refresh();
+					$('h2').hide();
 				});
 				// refresh van de main afspeellijst
 			})
