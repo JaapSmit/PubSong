@@ -214,6 +214,13 @@ public class Index {
 		return "redirect:/home";
 	}
 	
+	@RequestMapping(value="/uservote")
+	public @ResponseBody int uservote(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		User user = (User)session.getAttribute("user");
+		return user.getVotes();
+	}
+	
 	// Hier niet aanzitten, behalve als je een lege database hebt
 	@RequestMapping("/musicinput")
 	public @ResponseBody String musicinput() {

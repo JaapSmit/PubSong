@@ -79,7 +79,6 @@
 			
 			$.get("refresh", function(data) {
 				console.log("refresh");
-				$('#uservotes').text(${user.votes});
 				$('#hoofdAfspeellijst').empty();
 				var headerElement = $('<tr>' +
 						'<th>Artiest</th>' +
@@ -108,6 +107,10 @@
 					$('#hoofdAfspeellijst').append(newElement);
 				}
 			});
+			$.get("uservote", function(data) {
+				$('#uservotes').text(data);
+			});
+			
 		}
 		Refresh();
 		myVar = setInterval(Refresh, 5000);
