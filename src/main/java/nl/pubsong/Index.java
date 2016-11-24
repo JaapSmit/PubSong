@@ -38,6 +38,34 @@ public class Index {
 	@Autowired
 	private AfspeellijstDataRepository repoAfspeellijstData;
 	
+	// Get the number one song
+	@RequestMapping("/getNumberOneSong")
+	public @ResponseBody AfspeellijstData getNumberOneSong(HttpServletRequest request){
+		Afspeellijst mainAfspeellijst = new Afspeellijst();
+		Iterator itr = repoAfspeellijstData.findAll().iterator();
+		while(itr.hasNext()) {
+			AfspeellijstData data = (AfspeellijstData)itr.next();
+			mainAfspeellijst.voegToe(data);
+		}	
+		mainAfspeellijst.sort();
+		return mainAfspeellijst.getAfspeellijst().get(0);
+	}
+	
+	@RequestMapping("/getNextSong")
+	public @ResponseBody AfspeellijstData deleteFinishedSong(){
+		System.out.println("Ja dat lukt");
+		Afspeellijst mainAfspeellijst = new Afspeellijst();
+		Iterator itr = repoAfspeellijstData.findAll().iterator();
+		while(itr.hasNext()) {
+			AfspeellijstData data = (AfspeellijstData)itr.next();
+			mainAfspeellijst.voegToe(data);
+		}	
+		mainAfspeellijst.sort();
+		repoAfspeellijstData.delete(mainAfspeellijst.getAfspeellijst().get(0).getId());
+		return mainAfspeellijst.getAfspeellijst().get(0);
+	}
+	
+	
 	@RequestMapping("/")
 	public String indexPagina(HttpServletRequest request) {
 		// hier komt dus logica
