@@ -62,7 +62,7 @@ public class Index {
 		}	
 		mainAfspeellijst.sort();
 		repoAfspeellijstData.delete(mainAfspeellijst.getAfspeellijst().get(0).getId());
-		return mainAfspeellijst.getAfspeellijst().get(0);
+		return mainAfspeellijst.getAfspeellijst().get(1);
 	}
 	
 	
