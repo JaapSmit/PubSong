@@ -96,15 +96,25 @@
 						votes = data[i].votes;
 					} 
 					
-					var newElement = $('<tr>' + 
-							'<td>' + data[i].nummer.artiest + '</td>' + 
-							'<td>' + data[i].nummer.titel + '</td>' + 
-							'<td>' + votes + '</td>' +
-							'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
-							data[i].id +  
-							'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
+					var newElement;
+					if(data[i].playing) {
+						newElement = $('<tr>' + 
+						'<td>' + data[i].nummer.artiest + '</td>' + 
+						'<td>' + data[i].nummer.titel + '</td>' + 
+						'<td>' + votes + '</td>' +
+						'<td> Playing </td>' +
+						'</tr>');
+					} else {
+						newElement = $('<tr>' + 
+						'<td>' + data[i].nummer.artiest + '</td>' + 
+						'<td>' + data[i].nummer.titel + '</td>' + 
+						'<td>' + votes + '</td>' +
+						'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
+						data[i].id +  
+						'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
+						'</tr>');
+					}
 							
-							'</tr>');
 					$('#hoofdAfspeellijst').append(newElement);
 				}
 			});

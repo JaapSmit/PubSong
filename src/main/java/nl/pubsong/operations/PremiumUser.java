@@ -25,11 +25,9 @@ public class PremiumUser extends VotingSystem{
 	@Override
 	public void checkVotes(User user) {
 		if(user.getVotes() < 6) {
-			long timeDiff = (Duration.between(user.getLastVoteDate(), LocalDateTime.now())).toMillis(); // bijv 5000, 5 sec.. op de halve minuut krijgt hij erwat bij. (normal user is 1 minuut, dus 60000)
+			long timeDiff = (Duration.between(user.getLastVoteDate(), LocalDateTime.now())).toMinutes(); // bijv 60, 1 uur.. 
 			timeDiff *= 2; // twee keer zo snel?
-			System.out.println(timeDiff);
-			System.out.println(user.getVotes());
-			int intTimeDiff = (int)(timeDiff/60000); // delen door 60000, en dan afkappen achter de komma. Als het goed is blijven nu hele getallen over.
+			int intTimeDiff = (int)(timeDiff/60); // delen door 60, en dan afkappen achter de komma. Als het goed is blijven nu hele getallen over.
 			if(intTimeDiff > 0) { 
 				if(intTimeDiff + user.getVotes() > 6){
 					user.setVotes(6);

@@ -48,10 +48,9 @@ public class Index {
 			return "redirect:/login";
 		} else {
 			if(user.getRightsString().equals("AdminUser")) {
-				// je ben nu niet bevoegd voor deze pagina
-				System.out.println("In de adminpage");
 				return "adminpage";
 			} else {
+				// je ben nu niet bevoegd voor deze pagina
 				return "redirect:/login";
 			}
 		}
@@ -81,21 +80,29 @@ public class Index {
 			mainAfspeellijst.voegToe(data);
 		}	
 		mainAfspeellijst.sort();
+		mainAfspeellijst.getAfspeellijst().get(0).setPlaying(true);
+		repoAfspeellijstData.save(mainAfspeellijst.getAfspeellijst().get(0));
 		return mainAfspeellijst.getAfspeellijst().get(0);
 	}
 	
 	@RequestMapping("/getNextSong")
 	public @ResponseBody AfspeellijstData deleteFinishedSong(){
-		System.out.println("Ja dat lukt");
 		Afspeellijst mainAfspeellijst = new Afspeellijst();
 		Iterator itr = repoAfspeellijstData.findAll().iterator();
 		while(itr.hasNext()) {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
-			mainAfspeellijst.voegToe(data);
+			if(data.isPlaying()) {
+				// delete the one who is playing
+				repoAfspeellijstData.delete(data);
+			} else {
+				mainAfspeellijst.voegToe(data);
+			}
+			
 		}	
 		mainAfspeellijst.sort();
-		repoAfspeellijstData.delete(mainAfspeellijst.getAfspeellijst().get(0).getId());
-		return mainAfspeellijst.getAfspeellijst().get(1);
+		mainAfspeellijst.getAfspeellijst().get(0).setPlaying(true);
+		repoAfspeellijstData.save(mainAfspeellijst.getAfspeellijst().get(0));
+		return mainAfspeellijst.getAfspeellijst().get(0);
 	}
 	
 	
@@ -149,7 +156,6 @@ public class Index {
 		User user = new User();
 		user.setUserName(username);
 		user.setPassWord(password);
-		//user.setRights(new BasicUser());
 		user.setRightsString("BasicUser");
 		user.setDate();
 		user.setVotes(3);
@@ -175,18 +181,13 @@ public class Index {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
 			mainAfspeellijst.voegToe(data);
 		}
-		// eruit halen wat admin votes zijn, en deze vooraan zetten.
 		
 		mainAfspeellijst.sort();
 		HttpSession session = request.getSession();
 		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		//System.out.println(repoUser.findOne((long)(session.getAttribute("user"))).getLastVoteDate());
-		
 		// logica voor het optellen van de votes
-		//User user = repoUser.findOne((long)session.getAttribute("user"));
 		User user = (User)session.getAttribute("user");
 		user.getRights().checkVotes(user);
-		System.out.println("userrights: " + user.getRights());
 		repoUser.save(user);
 		
 		return "homepage";
@@ -202,19 +203,13 @@ public class Index {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
 			mainAfspeellijst.voegToe(data);
 		}
-		// eruit halen wat admin votes zijn, en deze vooraan zetten.
 				
 		mainAfspeellijst.sort();
-		HttpSession session = request.getSession();
-		//System.out.println(repoUser.findOne((long)(session.getAttribute("user"))).getLastVoteDate());
-				
+		HttpSession session = request.getSession();		
 		// logica voor het optellen van de votes
-		//User user = repoUser.findOne((long)session.getAttribute("user"));
 		User user = (User)session.getAttribute("user");
 		user.getRights().checkVotes(user);
-		System.out.println("userrights: " + user.getRights());
 		repoUser.save(user);
-		System.out.println(mainAfspeellijst);
 		return mainAfspeellijst.getAfspeellijst();
 	}
 	
@@ -266,7 +261,6 @@ public class Index {
 	@RequestMapping(value="/upvote", method=RequestMethod.POST)
 	public String upvote(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
-		//User user = repoUser.findOne((long)session.getAttribute("user"));
 		User user = (User)session.getAttribute("user");
 		user.getRights().addVote(repoAfspeellijstData.findOne(id), user);
 		user.getRights().minusUserVote(user);
