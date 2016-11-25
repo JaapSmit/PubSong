@@ -3,6 +3,7 @@ package nl.pubsong;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -162,7 +163,6 @@ public class Index {
 		EmailValidator ev = EmailValidator.getInstance();
 		if(ev.isValid(email) == false) {
 			// Foutieve email
-			System.out.println("Foutieve email");
 			return "redirect:/newUser";
 		}
 		
@@ -170,7 +170,6 @@ public class Index {
 		User user = (User)repoUser.findByuserName(username);
 		if(user != null) {
 			// User bestaat al
-			System.out.println("User bestaat al");
 			return "redirect:/newUser";
 		}
 		
@@ -223,6 +222,16 @@ public class Index {
 		while(itr.hasNext()) {
 			AfspeellijstData data = (AfspeellijstData)itr.next();
 			mainAfspeellijst.voegToe(data);
+		}
+		// voeg nummers toe als het aantal nummers onder de vijf komt
+		if(mainAfspeellijst.getSize() < 5) {
+			Random r = new Random();
+			long id = r.nextInt((int)repo.count());
+			if(repo.exists(id)) {
+				AfspeellijstData afspeellijstData = new AfspeellijstData();
+				afspeellijstData.setNummer(repo.findOne(id));
+				repoAfspeellijstData.save(afspeellijstData);
+			}
 		}
 				
 		mainAfspeellijst.sort();
