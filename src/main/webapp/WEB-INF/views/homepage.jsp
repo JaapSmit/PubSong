@@ -41,8 +41,7 @@
 			<td >
 				<ul>
 					<c:forEach items="${alleResultaten}" var="n">
-						<li class="toevoegen" id=${n.id}><!-- <a class="voegtoe" href="homeSelectie?id=${n.id}"> ${n.artiest} --
-								${n.titel} </a> -->
+						<li class="toevoegen" id=${n.id}>
 								<span class="artiest">${n.artiest }</span> -- <span class="titel">${n.titel}</span>
 								</li>
 					</c:forEach>
@@ -62,7 +61,6 @@
 			$('#titel').text(titel);
 			$('h2').show();
 			var idVar = $(this).attr('id');
-			//console.log(id)
 			$(".voegtoe-button").click(function() {
 				$.post("homeVoegToe", {id: idVar}, function() {
 					Refresh();
@@ -73,11 +71,7 @@
 		}
 		$(".toevoegen").click(selectieToevoegen);
 		
-		function Refresh() {
-			
-			//$('#hoofdAfspeellijst tr').remove();
-
-			
+		function Refresh() {	
 			$.get("refresh", function(data) {
 				console.log("refresh");
 				$('#hoofdAfspeellijst').empty();
@@ -109,9 +103,6 @@
 						'<td>' + data[i].nummer.artiest + '</td>' + 
 						'<td>' + data[i].nummer.titel + '</td>' + 
 						'<td>' + votes + '</td>' +
-						//'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
-						//data[i].id +  
-						//'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
 						'<td>' + '<input type="submit" class="vote-button" id=' + data[i].id + ' value="vote">' + '</td>' +
 						'</tr>');
 					}

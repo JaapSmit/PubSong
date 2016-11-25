@@ -58,7 +58,6 @@ public class User {
 	@Transient
 	public void setDate() {
 		LocalDateTime tmpdate = LocalDateTime.now();
-		System.out.println("ik zet de datum naar: " + tmpdate);
 		setLastVoteDate(tmpdate);
 	}
 

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,7 +21,6 @@ import nl.pubsong.music.AfspeellijstDataRepository;
 import nl.pubsong.music.BigListRepository;
 import nl.pubsong.music.BigListSqlInjector;
 import nl.pubsong.music.Nummer;
-import nl.pubsong.operations.BasicUser;
 import nl.pubsong.operations.User;
 import nl.pubsong.operations.UserRepository;
 
@@ -38,6 +36,7 @@ public class Index {
 	@Autowired
 	private AfspeellijstDataRepository repoAfspeellijstData;
 	
+	// Mapping voor de admin page, met een beetje logica
 	@RequestMapping("/admin")
 	public String adminPage(HttpServletRequest request) {
 		// beetje beveiliging erin
@@ -56,12 +55,13 @@ public class Index {
 		}
 	}
 	
-
+	// Zoek een user op naam
 	@RequestMapping(value="/findUser", method=RequestMethod.POST)
 	public @ResponseBody User findUser(String userNaam){
 		return repoUser.findByuserName(userNaam);
 	}
 	
+	// Sla de waardes na het aanpassen op
 	@RequestMapping(value="/saveUser", method=RequestMethod.POST)
 	public @ResponseBody void saveUser(String userNaam, int userVotes, String userRights){
 		User user =  repoUser.findByuserName(userNaam);
@@ -70,7 +70,7 @@ public class Index {
 		repoUser.save(user);		
 	}
 	
-	// Get the number one song
+	// REST, Get the number one song
 	@RequestMapping("/getNumberOneSong")
 	public @ResponseBody AfspeellijstData getNumberOneSong(HttpServletRequest request){
 		Afspeellijst mainAfspeellijst = new Afspeellijst();
@@ -85,6 +85,7 @@ public class Index {
 		return mainAfspeellijst.getAfspeellijst().get(0);
 	}
 	
+	// REST,  verwijder hiermee de huidige song en return de gene met de meeste votes
 	@RequestMapping("/getNextSong")
 	public @ResponseBody AfspeellijstData deleteFinishedSong(){
 		Afspeellijst mainAfspeellijst = new Afspeellijst();
@@ -105,7 +106,7 @@ public class Index {
 		return mainAfspeellijst.getAfspeellijst().get(0);
 	}
 	
-	
+	// Geen aanwezige url, ga naar login als je niet bent ingelogd, anders home
 	@RequestMapping("/")
 	public String indexPagina(HttpServletRequest request) {
 		// hier komt dus logica
@@ -117,6 +118,8 @@ public class Index {
 		}
 	}
 	
+	
+	// Mapping van de loginpage
 	@RequestMapping("/login") 
 	public String loginPagina() {
 		return "loginpage";
@@ -143,6 +146,7 @@ public class Index {
 		}
 	}
 	
+	// Als je op de log uit knop klikt, log je uit en wordt je geredirect naar login page
 	@RequestMapping("/logout") 
 	public String logoutPagina(HttpServletRequest request) {
 		HttpSession session = request.getSession();
@@ -156,7 +160,6 @@ public class Index {
 		// check email
 		if(email == null || email.equals("")) {
 			// Foutieve email
-			System.out.println("Foutieve email");
 			return "redirect:/newUser";
 		}
 		email = email.trim();
@@ -173,6 +176,7 @@ public class Index {
 			return "redirect:/newUser";
 		}
 		
+		// Als alles goedgegaan is maak een nieuwe user
 		user = new User();
 		user.setUserName(username);
 		user.setPassWord(password);
@@ -185,34 +189,44 @@ public class Index {
 		return "redirect:/home";
 	}
 	
+	// Mapping naar de newUserpage
 	@RequestMapping(value="/newUser") 
 	public String loginNewUser(HttpServletRequest request) {	
 		return "newuserpage";
 	}
 	
-	
+	// mapping voor de homepage
 	@RequestMapping("/home")
 	public String homePagina(HttpServletRequest request) {
-		// trek de huidige afspeellijst uit de database
-		Afspeellijst mainAfspeellijst = new Afspeellijst();
-				
-		Iterator itr = repoAfspeellijstData.findAll().iterator();
-		while(itr.hasNext()) {
-			AfspeellijstData data = (AfspeellijstData)itr.next();
-			mainAfspeellijst.voegToe(data);
-		}
-		
-		mainAfspeellijst.sort();
-		HttpSession session = request.getSession();
-		session.setAttribute("mainAfspeellijst", mainAfspeellijst);
-		// logica voor het optellen van de votes
+		// beetje beveiliging erin
+		HttpSession session = request.getSession(false);
 		User user = (User)session.getAttribute("user");
-		user.getRights().checkVotes(user);
-		repoUser.save(user);
-		
-		return "homepage";
+		if(session == null || user == null) {
+			// je bent nu dus niet ingelogd return naar loginpage
+			return "redirect:/login";
+		} else {
+			// trek de huidige afspeellijst uit de database
+			Afspeellijst mainAfspeellijst = new Afspeellijst();
+					
+			Iterator itr = repoAfspeellijstData.findAll().iterator();
+			while(itr.hasNext()) {
+				AfspeellijstData data = (AfspeellijstData)itr.next();
+				mainAfspeellijst.voegToe(data);
+			}
+			
+			mainAfspeellijst.sort();
+			session = request.getSession();
+			session.setAttribute("mainAfspeellijst", mainAfspeellijst);
+			// logica voor het optellen van de votes
+			user = (User)session.getAttribute("user");
+			user.getRights().checkVotes(user);
+			repoUser.save(user);
+			
+			return "homepage";
+		}
 	}
 	
+	// de refresh die door een ajax commando wordt aangeroepen, ververst de pagina
 	@RequestMapping("/refresh")
 	public @ResponseBody List<AfspeellijstData> refresh(HttpServletRequest request) {
 		// trek de huidige afspeellijst uit de database
@@ -243,6 +257,7 @@ public class Index {
 		return mainAfspeellijst.getAfspeellijst();
 	}
 	
+	// Het zoeken gebeurt nog wel via een post en een redirect, hier is dus duidelijk een pagina refresh te zien
 	@RequestMapping(value="/homeZoek", method=RequestMethod.POST) 
 	public String homeZoek(HttpServletRequest request, String zoek) {
 		ArrayList<Nummer> alleResultaten = new ArrayList<>();
@@ -250,17 +265,9 @@ public class Index {
 		alleResultaten = repo.findByArtiestContainingIgnoreCaseOrTitelContainingIgnoreCase(zoek, zoek);
 		HttpSession session = request.getSession();
 		session.setAttribute("alleResultaten", alleResultaten);
-		
 		return "redirect:/home";
 	}
-	
-	@RequestMapping(value="/homeSelectie") 
-	public String homeSelectie(Model model, long id) {
-		// logica het nummer aan de speelijst
-		model.addAttribute("gekozenNummer", repo.findOne(id));
-		return "homepage";
-	}
-	
+		
 	// logica het nummer aan de speellijst
 	@RequestMapping(value="/homeVoegToe", method=RequestMethod.POST) 
 	public @ResponseBody void homeVoegToe(HttpServletRequest request, long id) {
@@ -298,6 +305,7 @@ public class Index {
 		repoUser.save(user);
 	}
 	
+	// Haal via een ajax opdracht de votes van de user binnen, is de user Admin, return "Admin"
 	@RequestMapping(value="/uservote")
 	public @ResponseBody String uservote(HttpServletRequest request) {
 		HttpSession session = request.getSession();
