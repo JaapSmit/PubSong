@@ -56,7 +56,7 @@ public class Index {
 		}
 	}
 	
-	
+
 	@RequestMapping(value="/findUser", method=RequestMethod.POST)
 	public @ResponseBody User findUser(String userNaam){
 		return repoUser.findByuserName(userNaam);
@@ -259,14 +259,13 @@ public class Index {
 	
 	// Als je op de upvote knop klikt
 	@RequestMapping(value="/upvote", method=RequestMethod.POST)
-	public String upvote(HttpServletRequest request, long id) {
+	public @ResponseBody void upvote(HttpServletRequest request, long id) {
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("user");
 		user.getRights().addVote(repoAfspeellijstData.findOne(id), user);
 		user.getRights().minusUserVote(user);
 		repoAfspeellijstData.save(repoAfspeellijstData.findOne(id));
 		repoUser.save(user);
-		return "redirect:/home";
 	}
 	
 	@RequestMapping(value="/uservote")

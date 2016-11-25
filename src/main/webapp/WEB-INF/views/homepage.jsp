@@ -109,22 +109,38 @@
 						'<td>' + data[i].nummer.artiest + '</td>' + 
 						'<td>' + data[i].nummer.titel + '</td>' + 
 						'<td>' + votes + '</td>' +
-						'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
-						data[i].id +  
-						'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
+						//'<td>' + '<form method="post" action="upvote"><input hidden="nummer" name="id" value=' + 
+						//data[i].id +  
+						//'> <input type=submit class="vote-button" value="vote"> </form>' + '</td>' +
+						'<td>' + '<input type="submit" class="vote-button" id=' + data[i].id + ' value="vote">' + '</td>' +
 						'</tr>');
 					}
 							
 					$('#hoofdAfspeellijst').append(newElement);
+					
+					
 				}
+				$(".vote-button").click(function() {
+					console.log($(this).attr("id"));
+					$.post("upvote", {id: $(this).attr("id")}, function() {
+						Refresh();
+					});
+										
+				});
+				
 			});
 			$.get("uservote", function(data) {
 				$('#uservotes').text(data);
 			});
 			
+			
+			
 		}
 		Refresh();
 		myVar = setInterval(Refresh, 5000);
+		
+		
+		
 		
 	});
 	</script>
