@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +24,6 @@ import nl.pubsong.music.Nummer;
 import nl.pubsong.operations.BasicUser;
 import nl.pubsong.operations.User;
 import nl.pubsong.operations.UserRepository;
-
-
 
 @Controller
 public class Index {
@@ -152,8 +151,30 @@ public class Index {
 	
 	// aanmaken nieuwe user
 	@RequestMapping(value="/newUser", method=RequestMethod.POST) 
-	public String loginNewUserPost(HttpServletRequest request, String username, String password) {
-		User user = new User();
+	public String loginNewUserPost(HttpServletRequest request, String username, String password, String email) {
+		// check email
+		if(email == null || email.equals("")) {
+			// Foutieve email
+			System.out.println("Foutieve email");
+			return "redirect:/newUser";
+		}
+		email = email.trim();
+		EmailValidator ev = EmailValidator.getInstance();
+		if(ev.isValid(email) == false) {
+			// Foutieve email
+			System.out.println("Foutieve email");
+			return "redirect:/newUser";
+		}
+		
+		// check of de username al bestaat
+		User user = (User)repoUser.findByuserName(username);
+		if(user != null) {
+			// User bestaat al
+			System.out.println("User bestaat al");
+			return "redirect:/newUser";
+		}
+		
+		user = new User();
 		user.setUserName(username);
 		user.setPassWord(password);
 		user.setRightsString("BasicUser");
