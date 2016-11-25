@@ -269,10 +269,13 @@ public class Index {
 	}
 	
 	@RequestMapping(value="/uservote")
-	public @ResponseBody int uservote(HttpServletRequest request) {
+	public @ResponseBody String uservote(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("user");
-		return user.getVotes();
+		if(user.getRightsString().equals("AdminUser")) {
+			return "Admin";
+		}
+		return ""  +user.getVotes();
 	}
 	
 	// Hier niet aanzitten, behalve als je een lege database hebt
