@@ -24,6 +24,10 @@ public class Afspeellijst {
 		Collections.sort(lokaalAfspeellijst, new Comparator<AfspeellijstData>() {
 		    @Override
 		    public int compare(AfspeellijstData o1, AfspeellijstData o2) {
+		    	if(o1.isPlaying())
+		    		return -1;
+		    	if(o2.isPlaying())
+		    		return 1;
 		        return o2.getVotes() - o1.getVotes();
 		    }
 		});	

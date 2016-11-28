@@ -75,12 +75,21 @@
 			$.get("refresh", function(data) {
 				console.log("refresh");
 				$('#hoofdAfspeellijst').empty();
+				
+				/*var notplaying = data.filter(function(item){
+					return !item.playing;
+				}); 
+				var playing =  data.find(function(item){
+					return item.playing;
+				}); 
+				console.log(notplaying);*/
 				var headerElement = $('<tr>' +
 						'<th>Artiest</th>' +
 						'<th>Titel</th>' +
 						'<th>Votes</th>' +
 						'</tr>'
 						);
+				
 				$('#hoofdAfspeellijst').append(headerElement);
 				for(var i = 0; i < data.length; i++) {
 					var votes;
