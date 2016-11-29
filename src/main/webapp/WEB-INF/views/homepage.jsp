@@ -75,7 +75,8 @@
 			$.get("refresh", function(data) {
 				console.log("refresh");
 				$('#hoofdAfspeellijst').empty();
-				
+				//Bedoeld om het spelende nummer bovenaan te laten staan, zonder dat het wordt
+				//ingehaald door liedjes met meer votes. Op andere manier opgelost.
 				/*var notplaying = data.filter(function(item){
 					return !item.playing;
 				}); 
@@ -95,7 +96,9 @@
 					var votes;
 					if (data[i].adminVote == true) {
 						votes = "Admin veto!";
-					} else {
+					} else if (data[i].votes == 0){
+						votes = " ";
+					} 	else {
 						votes = data[i].votes;
 					} 
 					
