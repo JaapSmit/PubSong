@@ -1,4 +1,4 @@
-$(document).ready(function(){
+/*$(document).ready(function(){
 				$('.voegtoe').click(function() {
 					$('h2').show();
 				
@@ -6,4 +6,4 @@ $(document).ready(function(){
 				$('#voegtoe-button').click(function() {
 					$('h2').hide();
 				});
-});
+});*/
