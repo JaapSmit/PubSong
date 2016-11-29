@@ -15,6 +15,9 @@
 		<tr>
 			<th><h1>AFSPEELLIJST</h1></th>
 			<th><h12>User: ${user.userName} -- Votes: <span id="uservotes"></span></h12></th>
+			<c:if test="${user.getRightsString() == 'AdminUser'}">
+			<th><a href="admin">Ga naar de adminpage.</a></th>
+			</c:if>
 			<th><a href="logout">log uit</a></th>
 		</tr>
 	</table>
